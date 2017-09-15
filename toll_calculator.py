@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from workalendar.europe import Sweden
+from toll_constants import RUSH_HOUR_FEE_MAP, TOLL_FREE_VEHICLES, MAX_FEE
 
 
 class DifferentDaysException(Exception):
@@ -26,7 +27,7 @@ def calculate_toll(vehicle, string_dates):
         else:
             vehicle.set_last_payment(vehicle.get_last_payment())
 
-    return min(total_fee, 60)
+    return min(total_fee, MAX_FEE)
 
 
 def is_holiday(date):
@@ -35,7 +36,7 @@ def is_holiday(date):
 
 
 def is_toll_free(vehicle_type):
-    return vehicle_type.upper() in ['MOTORBIKE', 'TRACTOR', 'EMERGENCY', 'DIPLOMAT', 'FOREIGN', 'MILITARY']
+    return vehicle_type.upper() in TOLL_FREE_VEHICLES
 
 
 def get_fee(date):
@@ -44,26 +45,10 @@ def get_fee(date):
 
     passing_time = (date.hour, date.minute)
 
-    if   (6, 00)  <= passing_time <= (6, 29):
-        return 8
-    elif (6, 30)  <= passing_time <= (6, 59):
-        return 13
-    elif (7, 00)  <= passing_time <= (7, 59):
-        return 18
-    elif (8, 00)  <= passing_time <= (8, 29):
-        return 13
-    elif (8, 30)  <= passing_time <= (14, 59):
-        return 8
-    elif (15, 00) <= passing_time <= (15, 29):
-        return 13
-    elif (15, 30) <= passing_time <= (16, 59):
-        return 18
-    elif (17, 00) <= passing_time <= (17, 59):
-        return 13
-    elif (18, 00) <= passing_time <= (18, 29):
-        return 8
-    else:
-        return 0
+    for k, v in RUSH_HOUR_FEE_MAP.iteritems():
+        if k[0] <= passing_time <= k[1]:
+            return v
+    return 0
 
 
 def validate_dates(dates):
