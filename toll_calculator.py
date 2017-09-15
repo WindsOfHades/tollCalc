@@ -25,10 +25,8 @@ def calculate_toll(vehicle, string_dates):
             vehicle.set_last_payment(date)
         else:
             vehicle.set_last_payment(vehicle.get_last_payment())
-        if total_fee >= 60:
-            return 60
 
-    return total_fee
+    return min(total_fee, 60)
 
 
 def is_holiday(date):
@@ -37,15 +35,12 @@ def is_holiday(date):
 
 
 def is_toll_free(vehicle_type):
-    toll_free_vehicles = ['MOTORBIKE', 'TRACTOR', 'EMERGENCY', 'DIPLOMAT', 'FOREIGN', 'MILITARY']
-    if vehicle_type.upper() in toll_free_vehicles:
-        return True
+    return vehicle_type.upper() in ['MOTORBIKE', 'TRACTOR', 'EMERGENCY', 'DIPLOMAT', 'FOREIGN', 'MILITARY']
 
 
 def get_fee(date):
-    fee = 0
     if is_holiday(date):
-        return fee
+        return 0
 
     passing_time = (date.hour, date.minute)
 
