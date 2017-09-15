@@ -44,7 +44,6 @@ def get_fee(date):
         return 0
 
     passing_time = (date.hour, date.minute)
-
     for k, v in RUSH_HOUR_FEE_MAP.iteritems():
         if k[0] <= passing_time <= k[1]:
             return v
